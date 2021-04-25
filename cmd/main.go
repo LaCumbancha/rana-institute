@@ -2,7 +2,6 @@ package main
 
 import (
 	"os"
-	"fmt"
 	"net/http"
 
 	log "github.com/sirupsen/logrus"
@@ -10,12 +9,6 @@ import (
 )
 
 func main() {
-	dir, err := os.Getwd()
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(dir)
-
 	host := os.Getenv("HOST")
 	visitorCounter := services.NewVisitorService()
 	homeService := services.NewHomeService(host, visitorCounter)
