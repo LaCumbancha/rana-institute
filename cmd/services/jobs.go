@@ -8,31 +8,29 @@ import(
 )
 
 type JobsService struct {
-	host 				string
 	template			*template.Template
 	visitorService		*VisitorService
 }
 
 type jobsRenderizationData struct {
-	URL 				string
 	Visits 				int32
 }
 
 const JOBS_HTML_URL = "./html/jobs.html"
 
-func NewJobsService(host string, visitorService *VisitorService) *JobsService {
+func NewJobsService(visitorService *VisitorService) *JobsService {
 	templ, err := template.ParseFiles(JOBS_HTML_URL)
 	if err != nil {
 		log.Fatalf("Coudn't load jobs HTML. Err: %s", err)
 	}
 
-	return &JobsService { template: templ, host: host, visitorService: visitorService }
+	return &JobsService { template: templ, visitorService: visitorService }
 }
 
 func (service *JobsService) JobsHandler(writer http.ResponseWriter, _ *http.Request) {
 	visitorNumber := service.visitorService.NewVisitor(JOBS)
 
-	renderData := jobsRenderizationData { URL: service.host, Visits: visitorNumber }
+	renderData := jobsRenderizationData { Visits: visitorNumber }
 
 	if err := service.template.Execute(writer, renderData); err != nil {
 		log.Errorf("Error rendering jobs HTML. Err: %s", err)

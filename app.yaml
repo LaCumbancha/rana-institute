@@ -17,7 +17,6 @@ runtime: go115
 main: ./cmd
 
 env_variables:
-  HOST: "https://taller3-rana.uc.r.appspot.com"
   PORT: "8080"
 
 # Special configuration for cheap testing

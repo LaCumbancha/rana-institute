@@ -9,12 +9,11 @@ import (
 )
 
 func main() {
-	host := os.Getenv("HOST")
 	visitorCounter := services.NewVisitorService()
-	homeService := services.NewHomeService(host, visitorCounter)
-	jobsService := services.NewJobsService(host, visitorCounter)
-	aboutService := services.NewAboutService(host, visitorCounter)
-	legalService := services.NewLegalService(host, visitorCounter)
+	homeService := services.NewHomeService(visitorCounter)
+	jobsService := services.NewJobsService(visitorCounter)
+	aboutService := services.NewAboutService(visitorCounter)
+	legalService := services.NewLegalService(visitorCounter)
 
 	http.HandleFunc("/", homeService.HomeHandler)
 	http.HandleFunc("/jobs", jobsService.JobsHandler)
