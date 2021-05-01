@@ -21,14 +21,14 @@ const LEGAL_HTML_URL = "./html/legal.html"
 func NewLegalService(visitorService *VisitorService) *LegalService {
 	templ, err := template.ParseFiles(LEGAL_HTML_URL)
 	if err != nil {
-		log.Fatalf("Coudn't load legal HTML. Err: %s", err)
+		log.Fatalf("Coudn't load Legal HTML. Err: %s", err)
 	}
 
 	return &LegalService { template: templ, visitorService: visitorService }
 }
 
 func (service *LegalService) LegalHandler(writer http.ResponseWriter, _ *http.Request) {
-	visitorNumber := service.visitorService.NewVisitor(LEGAL)
+	visitorNumber := service.visitorService.HandleNewVisitor(LEGAL)
 
 	renderData := legalRenderizationData { Visits: visitorNumber }
 

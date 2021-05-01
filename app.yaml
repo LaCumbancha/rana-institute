@@ -17,12 +17,14 @@ runtime: go115
 main: ./cmd
 
 env_variables:
-  PORT: "8080"
+    port: "8080"
+    project: "Taller3-Rana"
+    datastore_entity: "PageVisitors"
 
 # Special configuration for cheap testing
 manual_scaling:
-  instances: 1
+    instances: 1
 resources:
-  cpu: 1
-  memory_gb: 0.5
-  disk_size_gb: 10
+    cpu: 1
+    memory_gb: 0.5
+    disk_size_gb: 10

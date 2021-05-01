@@ -9,18 +9,23 @@ import (
 )
 
 func main() {
-	visitorCounter := services.NewVisitorService()
+	projectName := os.Getenv("project")
+	datastoreEntity := os.Getenv("datastore_entity")
+	visitorCounter := services.NewVisitorService(projectName, datastoreEntity)
+	
+	indexService := services.NewIndexService()
 	homeService := services.NewHomeService(visitorCounter)
 	jobsService := services.NewJobsService(visitorCounter)
 	aboutService := services.NewAboutService(visitorCounter)
 	legalService := services.NewLegalService(visitorCounter)
 
-	http.HandleFunc("/", homeService.HomeHandler)
+	http.HandleFunc("/", indexService.IndexHandler)
+	http.HandleFunc("/home", homeService.HomeHandler)
 	http.HandleFunc("/jobs", jobsService.JobsHandler)
 	http.HandleFunc("/about", aboutService.AboutHandler)
 	http.HandleFunc("/about/legal", legalService.LegalHandler)
 
-	port := os.Getenv("PORT")
+	port := os.Getenv("port")
 	if port == "" {
 		port = "8080"
 		log.Infof("Defaulting to port %s.", port)

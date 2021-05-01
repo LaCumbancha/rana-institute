@@ -28,12 +28,12 @@ func NewHomeService(visitorService *VisitorService) *HomeService {
 }
 
 func (service *HomeService) HomeHandler(writer http.ResponseWriter, _ *http.Request) {
-	visitorNumber := service.visitorService.NewVisitor(HOME)
+	visitorNumber := service.visitorService.HandleNewVisitor(HOME)
 
 	renderData := homeRenderizationData { Visits: visitorNumber }
 
 	if err := service.template.Execute(writer, renderData); err != nil {
-		log.Errorf("Error rendering home HTML. Err: %s", err)
+		log.Errorf("Error rendering Home HTML. Err: %s", err)
 		http.Error(writer, err.Error(), 500)
 		return
 	}
