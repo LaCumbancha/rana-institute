@@ -10,7 +10,7 @@ Se solicita un sitio web institucional que cuente con un contador de visitas en 
 * Home
 * Jobs
 * About
-* About/Legals
+* About/Legal
 
 ### No Funcionales
 
