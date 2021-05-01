@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	log "github.com/sirupsen/logrus"
-	services "github.com/LaCumbancha/institutional-site/cmd/services"
+	services "github.com/LaCumbancha/rana-institute/infra/cmd/services"
 )
 
 func main() {

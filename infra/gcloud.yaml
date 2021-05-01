@@ -13,7 +13,7 @@
 # limitations under the License.
 
 runtime: go115
-service: rana-institute
+service: infra
 
 main: ./cmd
 

@@ -1,4 +1,4 @@
-module github.com/LaCumbancha/institutional-site
+module github.com/LaCumbancha/rana-institute/app
 
 go 1.15
 
