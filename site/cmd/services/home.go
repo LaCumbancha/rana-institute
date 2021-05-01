@@ -13,7 +13,7 @@ type HomeService struct {
 }
 
 type homeRenderizationData struct {
-	Visits 				int32
+	Visits 				int64
 }
 
 const HOME_HTML_URL = "./html/home.html"

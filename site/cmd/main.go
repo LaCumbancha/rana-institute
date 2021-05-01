@@ -9,9 +9,8 @@ import (
 )
 
 func main() {
-	projectName := os.Getenv("project")
-	datastoreEntity := os.Getenv("datastore_entity")
-	visitorCounter := services.NewVisitorService(projectName, datastoreEntity)
+	taskQueue := os.Getenv("task_queue")
+	visitorCounter := services.NewVisitorService(taskQueue)
 	
 	indexService := services.NewIndexService()
 	homeService := services.NewHomeService(visitorCounter)

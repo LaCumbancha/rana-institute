@@ -19,8 +19,7 @@ main: ./cmd
 
 env_variables:
     port: "8080"
-    project: "taller3-rana"
-    datastore_entity: "PageVisitors"
+    task_queue: "site"
 
 # Special configuration for cheap testing
 manual_scaling:
