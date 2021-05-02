@@ -13,7 +13,7 @@ type AboutService struct {
 }
 
 type aboutRenderizationData struct {
-	Visits 				int64
+	Visits 				int
 }
 
 const ABOUT_HTML_URL = "./html/about.html"

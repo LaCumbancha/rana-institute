@@ -9,21 +9,12 @@ import (
 )
 
 func main() {
-	projectName := os.Getenv("project")
+	projectName := os.Getenv("project_id")
+	visitsEndpoint := os.Getenv("visits_endpoint")
 	datastoreEntity := os.Getenv("datastore_entity")
-	visitorCounter := services.NewVisitorService(projectName, datastoreEntity)
-	
-	indexService := services.NewIndexService()
-	homeService := services.NewHomeService(visitorCounter)
-	jobsService := services.NewJobsService(visitorCounter)
-	aboutService := services.NewAboutService(visitorCounter)
-	legalService := services.NewLegalService(visitorCounter)
 
-	http.HandleFunc("/", indexService.IndexHandler)
-	http.HandleFunc("/home", homeService.HomeHandler)
-	http.HandleFunc("/jobs", jobsService.JobsHandler)
-	http.HandleFunc("/about", aboutService.AboutHandler)
-	http.HandleFunc("/about/legal", legalService.LegalHandler)
+	visitorService := services.NewVisitorService(projectName, datastoreEntity)
+	http.HandleFunc(visitsEndpoint, visitorService.VisitHandler)
 
 	port := os.Getenv("port")
 	if port == "" {

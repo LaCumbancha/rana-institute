@@ -13,7 +13,7 @@ type LegalService struct {
 }
 
 type legalRenderizationData struct {
-	Visits 				int64
+	Visits 				int
 }
 
 const LEGAL_HTML_URL = "./html/legal.html"

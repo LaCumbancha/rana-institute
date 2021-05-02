@@ -19,8 +19,9 @@ main: ./cmd
 
 env_variables:
     port: "8080"
-    project: "taller3-rana"
+    project_id: "taller3-rana"
     datastore_entity: "PageVisitors"
+    visits_endpoint: "/visits-register"
 
 # Special configuration for cheap testing
 manual_scaling:

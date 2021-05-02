@@ -5,18 +5,25 @@ import (
 	"net/http"
 
 	log "github.com/sirupsen/logrus"
+	google "github.com/LaCumbancha/rana-institute/app/cmd/google"
 	services "github.com/LaCumbancha/rana-institute/app/cmd/services"
 )
 
 func main() {
-	taskQueue := os.Getenv("task_queue")
-	visitorCounter := services.NewVisitorService(taskQueue)
+	queueId := os.Getenv("queue_id")
+	projectId := os.Getenv("project_id")
+	locationId := os.Getenv("location_id")
+	visitsEndpoint := os.Getenv("visits_endpoint")
+
+	visitorsCache := google.NewVisitorsCache()
+	tasksProducer := google.NewTaskProducer(projectId, locationId, queueId, visitsEndpoint)
+	visitorService := services.NewVisitorService(tasksProducer, visitorsCache)
 	
 	indexService := services.NewIndexService()
-	homeService := services.NewHomeService(visitorCounter)
-	jobsService := services.NewJobsService(visitorCounter)
-	aboutService := services.NewAboutService(visitorCounter)
-	legalService := services.NewLegalService(visitorCounter)
+	homeService := services.NewHomeService(visitorService)
+	jobsService := services.NewJobsService(visitorService)
+	aboutService := services.NewAboutService(visitorService)
+	legalService := services.NewLegalService(visitorService)
 
 	http.HandleFunc("/", indexService.IndexHandler)
 	http.HandleFunc("/home", homeService.HomeHandler)

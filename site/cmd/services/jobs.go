@@ -13,7 +13,7 @@ type JobsService struct {
 }
 
 type jobsRenderizationData struct {
-	Visits 				int64
+	Visits 				int
 }
 
 const JOBS_HTML_URL = "./html/jobs.html"
