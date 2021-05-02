@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 
 	log "github.com/sirupsen/logrus"
-	google "github.com/LaCumbancha/rana-institute/infra/cmd/google"
+	google "github.com/LaCumbancha/rana-institute/storage/cmd/google"
 )
 
 const HOME = "HOME"

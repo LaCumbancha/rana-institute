@@ -6,9 +6,11 @@ import (
 	"net/http"
 
 	log "github.com/sirupsen/logrus"
-	google "github.com/LaCumbancha/rana-institute/infra/cmd/google"
-	services "github.com/LaCumbancha/rana-institute/infra/cmd/services"
+	google "github.com/LaCumbancha/rana-institute/storage/cmd/google"
+	services "github.com/LaCumbancha/rana-institute/storage/cmd/services"
 )
+
+const DEFAULT_PORT = "8080"
 
 func main() {
 	projectId := os.Getenv("project_id")
@@ -19,26 +21,14 @@ func main() {
 	visitorService := services.NewVisitorService(datastoreClient)
 	http.HandleFunc(visitsEndpoint, visitorService.VisitHandler)
 
-
-
-	http.HandleFunc("/", func (w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/" {
-			http.NotFound(w, r)
-			return
-		}
-		fmt.Fprint(w, "Hello, World!")
-	})
-
-	
-
 	port := os.Getenv("port")
 	if port == "" {
-		port = "8080"
+		port = DEFAULT_PORT
 		log.Infof("Defaulting to port %s.", port)
 	}
 
 	log.Printf("Listening on port %s.", port)
-	if err := http.ListenAndServe(":"+port, nil); err != nil {
+	if err := http.ListenAndServe(fmt.Sprintf(":%s", port), nil); err != nil {
 		log.Fatal("Couldn't listen on port %d. Err: %s", port, err)
 	}
 }

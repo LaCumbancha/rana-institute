@@ -1,16 +1,10 @@
-# Site YAML - HTMLs and business logic.
-
 runtime: go115
-service: site
+service: cache
 
 main: ./cmd
 
 env_variables:
     port: "8080"
-    project_id: "taller3-rana"
-    location_id: "us-central1"
-    queue_id: "visits-queue"
-    visits_endpoint: "/visits-register"
 
 # Special configuration for cheap testing
 manual_scaling:

@@ -2,12 +2,15 @@ package main
 
 import (
 	"os"
+	"fmt"
 	"net/http"
 
 	log "github.com/sirupsen/logrus"
 	google "github.com/LaCumbancha/rana-institute/app/cmd/google"
 	services "github.com/LaCumbancha/rana-institute/app/cmd/services"
 )
+
+const DEFAULT_PORT = "8080"
 
 func main() {
 	queueId := os.Getenv("queue_id")
@@ -33,12 +36,12 @@ func main() {
 
 	port := os.Getenv("port")
 	if port == "" {
-		port = "8080"
+		port = DEFAULT_PORT
 		log.Infof("Defaulting to port %s.", port)
 	}
 
 	log.Printf("Listening on port %s.", port)
-	if err := http.ListenAndServe(":"+port, nil); err != nil {
+	if err := http.ListenAndServe(fmt.Sprintf(":%s", port), nil); err != nil {
 		log.Fatal("Couldn't listen on port %d. Err: %s", port, err)
 	}
 }

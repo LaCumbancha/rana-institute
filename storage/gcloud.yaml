@@ -1,15 +1,14 @@
-# Site YAML - HTMLs and business logic.
+# Storage YAML - Connection with Datastore
 
 runtime: go115
-service: site
+service: storage
 
 main: ./cmd
 
 env_variables:
     port: "8080"
     project_id: "taller3-rana"
-    location_id: "us-central1"
-    queue_id: "visits-queue"
+    datastore_entity: "PageVisitors"
     visits_endpoint: "/visits-register"
 
 # Special configuration for cheap testing
