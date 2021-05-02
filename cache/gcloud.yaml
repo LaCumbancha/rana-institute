@@ -5,6 +5,7 @@ main: ./cmd
 
 env_variables:
     port: "8080"
+    TTL: '5s'
 
 # Special configuration for cheap testing
 manual_scaling:

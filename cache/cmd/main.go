@@ -10,10 +10,17 @@ import (
 )
 
 const DEFAULT_PORT = "8080"
+const DEFAULT_TTL = "30s"
 
 func main() {
-	visitorsCache := infra.NewVisitorCache()
-	http.HandleFunc("/update-resource/", visitorsCache.NewVisitHandler)
+	TTL := os.Getenv("TTL")
+	if TTL == "" {
+		TTL = DEFAULT_TTL
+	}
+
+	visitorsCache := infra.NewVisitorCache(TTL)
+	http.HandleFunc("/get-visits/", visitorsCache.GetVisitsHandler)
+	http.HandleFunc("/set-visits", visitorsCache.SetVisitsHandler)
 	
 	port := os.Getenv("port")
 	if port == "" {

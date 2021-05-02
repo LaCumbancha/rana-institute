@@ -14,7 +14,7 @@ var helper *RouterHelperT
 var once sync.Once
 
 func RouterHelper() *RouterHelperT {
-	once.Do(func() { helper = &RouterHelperT{ updateEndpoint: "/update-resource/" } })
+	once.Do(func() { helper = &RouterHelperT{ updateEndpoint: "/get-visits/" } })
 	return helper
 }
 
