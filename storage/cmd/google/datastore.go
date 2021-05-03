@@ -25,7 +25,7 @@ const DATASTORE_FILTER_KEY = "Page"
 
 func NewDatastoreClient(projectId string, entity string, partitions int) *DatastoreClient {
 	context := context.Background()
-	dsClient, err := datastore.NewClient(context, datastore.DetectProjectID)
+	dsClient, err := datastore.NewClient(context, projectId)
 	if err != nil {
 		log.Fatalf("Error connecting to Datastore. Err: %s", err)
 	}

@@ -1,19 +1,27 @@
 SHELL := /bin/bash
 PWD := $(shell pwd)
 
-deploy:
-	gcloud app deploy site/gcloud.yaml --version $(version) --promote
-	gcloud app deploy cache/gcloud.yaml --version $(version) --promote
-	gcloud app deploy storage/gcloud.yaml --version $(version) --promote
+prepare-deploy:
+	@touch .deploy.tmp
+	@echo "y" >> .deploy.tmp
 
-deploy-site:
-	gcloud app deploy site/gcloud.yaml --version $(version) --promote
+deploy: prepare-deploy
+	gcloud app deploy site/gcloud.yaml --version $(version) --promote < .deploy.tmp
+	gcloud app deploy cache/gcloud.yaml --version $(version) --promote < .deploy.tmp
+	gcloud app deploy storage/gcloud.yaml --version $(version) --promote < .deploy.tmp
+	@rm .deploy.tmp
 
-deploy-storage:
-	gcloud app deploy storage/gcloud.yaml --version $(version) --promote
+deploy-site: prepare-deploy
+	gcloud app deploy site/gcloud.yaml --version $(version) --promote < .deploy.tmp
+	@rm .deploy.tmp
 
-deploy-cache:
-	gcloud app deploy cache/gcloud.yaml --version $(version) --promote
+deploy-storage: prepare-deploy
+	gcloud app deploy storage/gcloud.yaml --version $(version) --promote < .deploy.tmp
+	@rm .deploy.tmp
+
+deploy-cache: prepare-deploy
+	gcloud app deploy cache/gcloud.yaml --version $(version) --promote < .deploy.tmp
+	@rm .deploy.tmp
 
 run-site:
 	gcloud app browse -s site
