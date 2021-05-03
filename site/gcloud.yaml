@@ -10,9 +10,11 @@ env_variables:
     project_id: "taller3-rana"
     location_id: "us-central1"
     queue_id: "visits-queue"
-    visits_endpoint: "/visits-register"
 
-# Special configuration for cheap testing
+    cache_service: "cache"
+    storage_service: "storage"
+
+# Scaling
 manual_scaling:
     instances: 1
 resources:

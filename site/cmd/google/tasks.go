@@ -14,10 +14,9 @@ type TaskProducer struct {
 	context				context.Context
 	queueId				string
 	queuePath			string
-	endpoint			string
 }
 
-func NewTaskProducer(projectId string, locationId string, queueId string, endpoint string) *TaskProducer {
+func NewTaskProducer(projectId string, locationId string, queueId string) *TaskProducer {
 	context := context.Background()
 	client, err := cloudtasks.NewClient(context)
 	if err != nil {
@@ -29,7 +28,7 @@ func NewTaskProducer(projectId string, locationId string, queueId string, endpoi
 	queuePath := fmt.Sprintf("projects/%s/locations/%s/queues/%s", projectId, locationId, queueId)
 	log.Debugf("Tasks queue path defined as '%s'", queuePath)
 
-	return &TaskProducer { client, context, queueId, queuePath, endpoint }
+	return &TaskProducer { client, context, queueId, queuePath }
 }
 
 func (producer *TaskProducer) RegisterNewVisit(page string) {
@@ -39,12 +38,12 @@ func (producer *TaskProducer) RegisterNewVisit(page string) {
 			MessageType: &publisher.Task_AppEngineHttpRequest {
 				AppEngineHttpRequest: &publisher.AppEngineHttpRequest {
 					HttpMethod:  publisher.HttpMethod_POST,
-					RelativeUri: producer.endpoint,
+					RelativeUri: "/register-visits",
 				},
 			},
 		},
 	}
-	log.Debugf("New task request generated for page %s and for endpoint %s.", page, producer.endpoint)
+	log.Debugf("New task request generated for page %s to endpoint /visits-register.", page)
 
 	// Add the page as a a payload message.
 	request.Task.GetAppEngineHttpRequest().Body = []byte(page)

@@ -16,6 +16,7 @@ type aboutRenderizationData struct {
 	Visits 				int
 }
 
+const ABOUT_PAGE = "ABOUT"
 const ABOUT_HTML_URL = "./html/about.html"
 
 func NewAboutService(visitorService *VisitorService) *AboutService {
@@ -28,7 +29,7 @@ func NewAboutService(visitorService *VisitorService) *AboutService {
 }
 
 func (service *AboutService) AboutHandler(writer http.ResponseWriter, _ *http.Request) {
-	visitorNumber := service.visitorService.HandleNewVisitor(ABOUT)
+	visitorNumber := service.visitorService.UpdateVisitorCount(ABOUT_PAGE)
 
 	renderData := aboutRenderizationData { Visits: visitorNumber }
 

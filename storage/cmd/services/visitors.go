@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"net/http"
 	"io/ioutil"
+	"encoding/json"
 
 	log "github.com/sirupsen/logrus"
+	utils "github.com/LaCumbancha/rana-institute/storage/cmd/utils"
 	google "github.com/LaCumbancha/rana-institute/storage/cmd/google"
 )
 
@@ -13,6 +15,11 @@ const HOME = "HOME"
 const JOBS = "JOBS"
 const ABOUT = "ABOUT"
 const LEGAL = "LEGAL"
+
+type TransferData struct {
+	Page 				string
+	Visits 				int
+}
 
 type VisitorService struct {
 	datastoreClient 	*google.DatastoreClient
@@ -22,8 +29,8 @@ func NewVisitorService(datastoreClient *google.DatastoreClient) *VisitorService 
 	return &VisitorService { datastoreClient }
 }
 
-func (service *VisitorService) VisitHandler(writer http.ResponseWriter, request *http.Request) {
-	log.Infof("New message received at visits endpoint.")
+func (service *VisitorService) RegisterVisitHandler(writer http.ResponseWriter, request *http.Request) {
+	log.Infof("New message received at register visits endpoint.")
 
 	taskName := request.Header.Get("X-Appengine-Taskname")
 	if taskName == "" {
@@ -49,7 +56,7 @@ func (service *VisitorService) VisitHandler(writer http.ResponseWriter, request 
 	log.Infof("New visit received from page %s.", page)
 
 	if service.validatePage(page) {
-		service.datastoreClient.UpdateVisits(page)
+		service.datastoreClient.RegisterNewVisitor(page)
 	} else {
 		log.Warnf("Unknown page visit received: %s.", page)
 	}
@@ -61,6 +68,28 @@ func (service *VisitorService) VisitHandler(writer http.ResponseWriter, request 
 	// Set a non-2xx status code to indicate a failure in task processing that should be retried.
 	// For example, http.Error(writer, "Internal Server Error: Task Processing", http.StatusInternalServerError)
 	fmt.Fprintln(writer, output)
+}
+
+func (service *VisitorService) RetrieveVisitsHandler(writer http.ResponseWriter, request *http.Request) {
+	page := utils.RouterHelper().GetPage(request)
+	log.Infof("New message received at GET visits endpoint for page %s.", page)
+
+	visits, err := service.datastoreClient.RetrieveVisitorCount(page)
+	if err != nil {
+		log.Infof("There was an error retrieving the total number of visits for page %s. Err: %s", page, err)
+		http.Error(writer, fmt.Sprintf("Internal Error", page), http.StatusInternalServerError)
+		return
+	}
+	
+	visitorData := TransferData { Page: page, Visits: visits }
+	output, err := json.Marshal(visitorData)
+	if err != nil {
+		log.Errorf("Error serializing visits data for page %s. Visitor count at %d.", visitorData.Page, visitorData.Visits)
+		http.Error(writer, "Internal Error", http.StatusInternalServerError)
+		return
+	}
+
+	fmt.Fprintln(writer, string(output))
 }
 
 func (service *VisitorService) validatePage(page string) bool {

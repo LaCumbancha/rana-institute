@@ -8,10 +8,10 @@ main: ./cmd
 env_variables:
     port: "8080"
     project_id: "taller3-rana"
-    datastore_entity: "PageVisitors"
-    visits_endpoint: "/visits-register"
+    entity: "PageVisitors"
+    partitions: 100
 
-# Special configuration for cheap testing
+# Scaling
 manual_scaling:
     instances: 1
 resources:

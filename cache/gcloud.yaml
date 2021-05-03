@@ -1,3 +1,5 @@
+# Cache YAML - In-memory storage
+
 runtime: go115
 service: cache
 
@@ -7,10 +9,10 @@ env_variables:
     port: "8080"
     TTL: '5s'
 
-# Special configuration for cheap testing
+# Scaling
 manual_scaling:
     instances: 1
 resources:
-    cpu: 1
+    cpu: 4
     memory_gb: 0.5
-    disk_size_gb: 10
+    disk_size_gb: 0.5

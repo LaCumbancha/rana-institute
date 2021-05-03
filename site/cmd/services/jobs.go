@@ -16,6 +16,7 @@ type jobsRenderizationData struct {
 	Visits 				int
 }
 
+const JOBS_PAGE = "JOBS"
 const JOBS_HTML_URL = "./html/jobs.html"
 
 func NewJobsService(visitorService *VisitorService) *JobsService {
@@ -28,7 +29,7 @@ func NewJobsService(visitorService *VisitorService) *JobsService {
 }
 
 func (service *JobsService) JobsHandler(writer http.ResponseWriter, _ *http.Request) {
-	visitorNumber := service.visitorService.HandleNewVisitor(JOBS)
+	visitorNumber := service.visitorService.UpdateVisitorCount(JOBS_PAGE)
 
 	renderData := jobsRenderizationData { Visits: visitorNumber }
 

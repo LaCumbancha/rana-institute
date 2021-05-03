@@ -1,23 +1,29 @@
 package google
 
 import (
+	"fmt"
 	"context"
+	"math/rand"
 	"cloud.google.com/go/datastore"
 
 	log "github.com/sirupsen/logrus"
 )
 
-type PageVisits struct {
-	Visits 		int32
+type StoredVisits struct {
+	Page				string
+	Visits 				int
 }
 
 type DatastoreClient struct {
 	dsClient 			*datastore.Client
 	context				context.Context
 	entity				string
+	partitions			int
 }
 
-func NewDatastoreClient(projectName string, entity string) *DatastoreClient {
+const DATASTORE_FILTER_KEY = "Page"
+
+func NewDatastoreClient(projectId string, entity string, partitions int) *DatastoreClient {
 	context := context.Background()
 	dsClient, err := datastore.NewClient(context, datastore.DetectProjectID)
 	if err != nil {
@@ -25,24 +31,29 @@ func NewDatastoreClient(projectName string, entity string) *DatastoreClient {
 	}
 
 	log.Infof("New client for Datastore created.")
-	return &DatastoreClient { dsClient, context, entity }
+	return &DatastoreClient { dsClient, context, entity, partitions }
 }
 
-func (client *DatastoreClient) UpdateVisits(page string) error {
+func (client *DatastoreClient) RegisterNewVisitor(page string) error {
 	log.Infof("Updating Datastore page %s visits.", page)
 
-	var pageVisits PageVisits
-	key := datastore.NameKey(client.entity, page, nil)
-
 	_, err := client.dsClient.RunInTransaction(client.context, func(transaction *datastore.Transaction) error {
+		var storedVisits StoredVisits
+		entityId := client.randomKeyName(page)
+		key := datastore.NameKey(client.entity, entityId, nil)
 
-		if err := transaction.Get(key, &pageVisits); err != nil {
+		if err := transaction.Get(key, &storedVisits); err == datastore.ErrNoSuchEntity {
+			log.Infof("Entity %s not found. Initializing with visitors count at 1", entityId)
+			storedVisits = StoredVisits { Page: page, Visits: 1 }
+		} else if err != nil {
 			log.Errorf("Error retrieving page %s visits counter. Err: %s", page, err)
 			return err
+		} else {
+			log.Infof("Entity %s retrieved with visitors count at %d. Incrementiny by 1.", entityId, storedVisits.Visits)
+			storedVisits.Visits++
 		}
 
-		pageVisits.Visits++
-		if _, err := transaction.Put(key, &pageVisits); err != nil {
+		if _, err := transaction.Put(key, &storedVisits); err != nil {
 			log.Errorf("Error updating page %s visits counter. Err: %s", page, err)
 			return err
 		}
@@ -56,4 +67,27 @@ func (client *DatastoreClient) UpdateVisits(page string) error {
 	}
 
 	return nil
+}
+
+func (client *DatastoreClient) RetrieveVisitorCount(page string) (int, error) {
+	log.Infof("Retrieving Datastore page %s visits.", page)
+
+	var storedVisits []StoredVisits
+	query := datastore.NewQuery(client.entity).Filter(fmt.Sprintf("%s = ", DATASTORE_FILTER_KEY), page)
+	if _, err := client.dsClient.GetAll(client.context, query, &storedVisits); err != nil {
+		log.Errorf("Couldn't retrieve the page %s visitor count.", page)
+		return 0, err
+	}
+
+	maxVisits := 0
+	for _, storedVisit := range storedVisits {
+		maxVisits += storedVisit.Visits
+    }
+
+    return maxVisits, nil
+}
+
+func (client *DatastoreClient) randomKeyName(page string) string {
+	shard := rand.Intn(client.partitions)
+	return fmt.Sprintf("%s-%d", page, shard)
 }

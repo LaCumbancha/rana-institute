@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 	"fmt"
+	"strconv"
 	"net/http"
 
 	log "github.com/sirupsen/logrus"
@@ -11,15 +12,22 @@ import (
 )
 
 const DEFAULT_PORT = "8080"
+const DEFAULT_PARTITIONS = 10
 
 func main() {
 	projectId := os.Getenv("project_id")
-	visitsEndpoint := os.Getenv("visits_endpoint")
-	datastoreEntity := os.Getenv("datastore_entity")
+	entity := os.Getenv("entity")
 
-	datastoreClient := google.NewDatastoreClient(projectId, datastoreEntity)
+	partitions, err := strconv.Atoi(os.Getenv("partitions"))
+	if err != nil {
+		log.Errorf("Error retrieving the number of Datastore partitions. Defaulting at 10.")
+		partitions = DEFAULT_PARTITIONS
+	}
+
+	datastoreClient := google.NewDatastoreClient(projectId, entity, partitions)
 	visitorService := services.NewVisitorService(datastoreClient)
-	http.HandleFunc(visitsEndpoint, visitorService.VisitHandler)
+	http.HandleFunc("/register-visits", visitorService.RegisterVisitHandler)
+	http.HandleFunc("/retrieve-visits/", visitorService.RetrieveVisitsHandler)
 
 	port := os.Getenv("port")
 	if port == "" {

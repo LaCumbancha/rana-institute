@@ -16,6 +16,7 @@ type homeRenderizationData struct {
 	Visits 				int
 }
 
+const HOME_PAGE = "HOME"
 const HOME_HTML_URL = "./html/home.html"
 
 func NewHomeService(visitorService *VisitorService) *HomeService {
@@ -28,7 +29,7 @@ func NewHomeService(visitorService *VisitorService) *HomeService {
 }
 
 func (service *HomeService) HomeHandler(writer http.ResponseWriter, _ *http.Request) {
-	visitorNumber := service.visitorService.HandleNewVisitor(HOME)
+	visitorNumber := service.visitorService.UpdateVisitorCount(HOME_PAGE)
 
 	renderData := homeRenderizationData { Visits: visitorNumber }
 

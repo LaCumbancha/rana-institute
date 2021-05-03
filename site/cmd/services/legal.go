@@ -16,6 +16,7 @@ type legalRenderizationData struct {
 	Visits 				int
 }
 
+const LEGAL_PAGE = "LEGAL"
 const LEGAL_HTML_URL = "./html/legal.html"
 
 func NewLegalService(visitorService *VisitorService) *LegalService {
@@ -28,7 +29,7 @@ func NewLegalService(visitorService *VisitorService) *LegalService {
 }
 
 func (service *LegalService) LegalHandler(writer http.ResponseWriter, _ *http.Request) {
-	visitorNumber := service.visitorService.HandleNewVisitor(LEGAL)
+	visitorNumber := service.visitorService.UpdateVisitorCount(LEGAL_PAGE)
 
 	renderData := legalRenderizationData { Visits: visitorNumber }
 

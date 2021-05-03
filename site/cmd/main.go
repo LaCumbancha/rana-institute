@@ -7,6 +7,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	google "github.com/LaCumbancha/rana-institute/app/cmd/google"
+	clients "github.com/LaCumbancha/rana-institute/app/cmd/clients"
 	services "github.com/LaCumbancha/rana-institute/app/cmd/services"
 )
 
@@ -16,11 +17,13 @@ func main() {
 	queueId := os.Getenv("queue_id")
 	projectId := os.Getenv("project_id")
 	locationId := os.Getenv("location_id")
-	visitsEndpoint := os.Getenv("visits_endpoint")
+	cacheId := os.Getenv("cache_service")
+	storageId := os.Getenv("storage_service")
 
-	visitorsCache := google.NewVisitorsCache()
-	tasksProducer := google.NewTaskProducer(projectId, locationId, queueId, visitsEndpoint)
-	visitorService := services.NewVisitorService(tasksProducer, visitorsCache)
+	cacheClient := clients.NewCacheClient(projectId, cacheId)
+	storageClient := clients.NewStorageClient(projectId, storageId)
+	tasksProducer := google.NewTaskProducer(projectId, locationId, queueId)
+	visitorService := services.NewVisitorService(tasksProducer, cacheClient, storageClient)
 	
 	indexService := services.NewIndexService()
 	homeService := services.NewHomeService(visitorService)
