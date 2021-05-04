@@ -1,8 +1,6 @@
 SHELL := /bin/bash
 PWD := $(shell pwd)
 
-environment := dev
-
 prepare-deploy:
 	@touch .deploy.tmp
 	@echo "y" >> .deploy.tmp
@@ -28,10 +26,18 @@ deploy-cache: prepare-deploy
 update-queues:
 	gcloud tasks queues update $(queue) --routing-override=service:$(service),version:$(version)
 
-run-site:
-	gcloud app browse -s site
-
-run-test:
+run-local-test:
 	influxd &
 	brew services start grafana &
-	k6 run -e K6_INFLUXDB_USERNAME=admin -e K6_INFLUXDB_PASSWORD=admin -e ENVIRONMENT=$(environment) --out influxdb=http://localhost:8086/myk6db test/k6-performance-test.js
+	k6 run -e K6_INFLUXDB_USERNAME=admin -e K6_INFLUXDB_PASSWORD=admin --out influxdb=http://localhost:8086/myk6db test/k6-performance-test.js
+
+run-test:
+	docker-compose -f ./test/dockerized-environment.yml up -d influxdb grafana
+	docker-compose run -v ./test/scripts:/scripts k6 run -e environment=PROD /scripts/long-test.js
+
+stop-test:
+	docker-compose -f ./test/dockerized-environment.yml stop -t 1
+	docker-compose -f ./test/dockerized-environment.yml down
+
+run-site:
+	gcloud app browse -s site
