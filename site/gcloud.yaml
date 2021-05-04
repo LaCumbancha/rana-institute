@@ -14,6 +14,10 @@ env_variables:
     cache_service: "cache"
     storage_service: "storage"
 
+handlers:
+    - url: /static
+      static_dir: public
+
 # Scaling
 manual_scaling:
     instances: 1
