@@ -29,11 +29,11 @@ update-queues:
 run-local-test:
 	influxd &
 	brew services start grafana &
-	k6 run -e K6_INFLUXDB_USERNAME=admin -e K6_INFLUXDB_PASSWORD=admin --out influxdb=http://localhost:8086/myk6db test/k6-performance-test.js
+	k6 run -e K6_INFLUXDB_USERNAME=admin -e K6_INFLUXDB_PASSWORD=admin -e SIZE=SHORT --out influxdb=http://localhost:8086/myk6db test/k6-performance-test.js
 
 run-test:
 	docker-compose -f ./test/dockerized-environment.yml up -d influxdb grafana
-	docker-compose run -v ./test/scripts:/scripts k6 run -e environment=PROD /scripts/long-test.js
+	docker-compose run -v ./test/scripts:/scripts k6 run -e ENVIRONMENT=PROD -e SIZE=LONG /scripts/long-test.js
 
 stop-test:
 	docker-compose -f ./test/dockerized-environment.yml stop -t 1
