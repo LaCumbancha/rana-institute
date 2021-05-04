@@ -29,6 +29,7 @@ func NewJobsService(visitorService *VisitorService) *JobsService {
 }
 
 func (service *JobsService) JobsHandler(writer http.ResponseWriter, _ *http.Request) {
+	log.Infof("New visit at the JOBS page.")
 	visitorNumber := service.visitorService.UpdateVisitorCount(JOBS_PAGE)
 
 	renderData := jobsRenderizationData { Visits: visitorNumber }

@@ -29,6 +29,7 @@ func NewLegalService(visitorService *VisitorService) *LegalService {
 }
 
 func (service *LegalService) LegalHandler(writer http.ResponseWriter, _ *http.Request) {
+	log.Infof("New visit at the LEGAL page.")
 	visitorNumber := service.visitorService.UpdateVisitorCount(LEGAL_PAGE)
 
 	renderData := legalRenderizationData { Visits: visitorNumber }

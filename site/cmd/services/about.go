@@ -29,6 +29,7 @@ func NewAboutService(visitorService *VisitorService) *AboutService {
 }
 
 func (service *AboutService) AboutHandler(writer http.ResponseWriter, _ *http.Request) {
+	log.Infof("New visit at the ABOUT page.")
 	visitorNumber := service.visitorService.UpdateVisitorCount(ABOUT_PAGE)
 
 	renderData := aboutRenderizationData { Visits: visitorNumber }

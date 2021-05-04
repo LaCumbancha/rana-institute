@@ -29,6 +29,7 @@ func NewHomeService(visitorService *VisitorService) *HomeService {
 }
 
 func (service *HomeService) HomeHandler(writer http.ResponseWriter, _ *http.Request) {
+	log.Infof("New visit at the HOME page.")
 	visitorNumber := service.visitorService.UpdateVisitorCount(HOME_PAGE)
 
 	renderData := homeRenderizationData { Visits: visitorNumber }

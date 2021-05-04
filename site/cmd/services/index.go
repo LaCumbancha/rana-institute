@@ -23,6 +23,7 @@ func NewIndexService() *IndexService {
 }
 
 func (service *IndexService) IndexHandler(writer http.ResponseWriter, _ *http.Request) {
+	log.Infof("New visit at the INDEX page.")
 	if err := service.template.Execute(writer, nil); err != nil {
 		log.Errorf("Error rendering Index HTML. Err: %s", err)
 		http.Error(writer, err.Error(), 500)
