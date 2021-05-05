@@ -143,7 +143,7 @@ export function stressTest() {
 		}
 
 		metrics(response.status, responseTime)
-		sleep(Math.random() * 10)
+		sleep(Math.random() * 5)
 	})
 }
 
