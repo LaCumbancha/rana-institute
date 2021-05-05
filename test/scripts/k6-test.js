@@ -1,17 +1,11 @@
 import http from 'k6/http';
 import { check, sleep, group } from "k6"
-import { Trend, Rate } from 'k6/metrics'
+import { Trend, Rate, Counter } from 'k6/metrics'
+import papaparse from 'https://jslib.k6.io/papaparse/5.1.1/index.js'
 
+// Setting test URLs
 const DEV_URL = "http://localhost:8080/"
 const PROD_URL = "https://site-dot-taller3-rana.uc.r.appspot.com/"
-
-const IDX_PAGE = "/"
-const HOME_PAGE = "/home"
-const JOBS_PAGE = "/jobs"
-const ABOUT_PAGE = "/about"
-const LEGAL_PAGE = "/about/legal"
-
-let currentPage = "/"
 
 let URL = DEV_URL
 if (__ENV.ENVIRONMENT !== undefined) {
@@ -24,6 +18,16 @@ if (__ENV.ENVIRONMENT !== undefined) {
 	}
 }
 
+// Setting pages
+let currentPage = "/"
+const IDX_PAGE = "/"
+const HOME_PAGE = "/home"
+const JOBS_PAGE = "/jobs"
+const ABOUT_PAGE = "/about"
+const LEGAL_PAGE = "/about/legal"
+
+// Setting cached resources
+const FAVICON_URL = `${URL}/favicon.ico`
 const HOME_IMG_URL = `${URL}/static/mister-chispa.webp`
 const JOBS_IMG_URL = `${URL}/static/solitaire-bob.png`
 const ABOUT_IMG_URL = `${URL}/static/happy-student.jpeg`
@@ -34,65 +38,66 @@ const LEGAL_IMG4_URL = `${URL}/static/toaster.gif`
 const LEGAL_IMG5_URL = `${URL}/static/worm.gif`
 const LEGAL_IMG6_URL = `${URL}/static/dancing-jesus.gif`
 
-let userCachedResources = { HOME_PAGE: false, JOBS_PAGE: false, ABOUT_PAGE: false, LEGAL_PAGE: false }
+let userCachedResources = { IDX_PAGE: false, HOME_PAGE: false, JOBS_PAGE: false, ABOUT_PAGE: false, LEGAL_PAGE: false }
 
+// Setting metrics
+const errorRate = new Rate('ErrorRate')
+const successRate = new Rate('SuccessRate')
+let waitingTime = new Trend('WaitingTime')
+let statusCodes = new Counter('StatusCodes')
+let failingRequests = new Counter('FailingRequests')
 
-let errorRate = new Rate('ErrorRate')
-let trend = new Trend('WaitingTime')
+// Loading test stages
+const csvData = papaparse.parse(open(__ENV.SCENARIO), { header: true }).data
+let csvStages = []
 
-let longScenario = {
-	stressTest: {
-		executor: 'ramping-vus',
-		exec: 'stressTest',
-		startVUs: 0,
-		stages: [
-			{ duration: '4m', target: 400 },
-			{ duration: '4m', target: 400 },
-			{ duration: '2m', target: 0 },
-		],
-		gracefulRampDown: '10s',
-	},
-}
+csvData.forEach(function(csvRow) {
+	if (csvRow.duration != "") {
+		csvStages.push({ duration: csvRow.duration, target: parseInt(csvRow.target) })
+	}
+})
 
-let shortScenario = {
-	stressTest: {
-		executor: 'ramping-vus',
-		exec: 'stressTest',
-		startVUs: 0,
-		stages: [
-			{ duration: '30s', target: 5 }
-		],
-		gracefulRampDown: '10s',
-	},
-}
-
-let testScenario = shortScenario
-if (__ENV.SIZE !== undefined) {
-	switch (__ENV.SIZE.toUpperCase()) {
-		case 'LONG':
-			testScenario = longScenario
-			break
-		default:
-			testScenario = shortScenario
+// Setting K6 options
+export let options = {
+	discardResponseBodies: false,
+	scenarios: {
+		stressTest: {
+			executor: 'ramping-vus',
+			exec: 'stressTest',
+			startVUs: 0,
+			stages: csvStages,
+			gracefulRampDown: '10s',
+		},
 	}
 }
 
-export let options = {
-	discardResponseBodies: false,
-	scenarios: testScenario,
-}
-
-
+// Updating metrics
 export function metrics(status, time) {
-	trend.add(time);
-    check(status, { 'Status was 2XX': (code) => code >= 200 && code < 300 })
+	waitingTime.add(time)
+
+	if (status < 200 || status >= 299) {
+		failingRequests.add(1)
+	}
+
+	statusCodes.add(1, { tag: status })
+	errorRate.add(status < 200 || status >= 300)
+	successRate.add(status >= 200 && status < 300)
+    check(status, { 'Status was 2XX': (code) => code >= 200 && code < 300 } )
 }
 
+// Test run
 export function stressTest() {
 	group('/site', function(){
 		currentPage = nextPage(currentPage)
 		let response = http.get(URL + currentPage)
 		let responseTime = response.timings.waiting
+
+		// Retrieving favicon only once.
+		if (!userCachedResources[IDX_PAGE]) {
+			userCachedResources[IDX_PAGE] = true
+			let imgResponse = http.get(FAVICON_URL)
+			responseTime += imgResponse.timings.waiting
+		}
 
 		// Retrieving static content for HOME page (only once).
 		if (currentPage == HOME_PAGE) {
@@ -142,6 +147,7 @@ export function stressTest() {
 	})
 }
 
+// Auxiliar function for randomly select the next page
 function nextPage(page) {
 	let choice = Math.random()
 	switch (page) {

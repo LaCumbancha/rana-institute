@@ -18,7 +18,7 @@ func NewVisitorService(tasksProducer *google.TaskProducer, cacheClient *clients.
 
 func (service *VisitorService) UpdateVisitorCount(page string) int {
 	log.Infof("Generating new task for page %s new visitor.", page)
-	service.tasksProducer.RegisterNewVisit(page)
+	go service.tasksProducer.RegisterNewVisit(page)
 	
 	log.Debugf("Retrieving visitors count for page %s from cache.", page)
 	visits := service.cacheClient.GetCachedVisitorCount(page)
@@ -32,7 +32,7 @@ func (service *VisitorService) UpdateVisitorCount(page string) int {
 			return 0
 		} else {
 			log.Infof("Updating cache with new visitor counter (%d) for page %s.", visits, page)
-			service.cacheClient.SetCachedVisitorCount(page, visits)
+			go service.cacheClient.SetCachedVisitorCount(page, visits)
 		}
 	}
 

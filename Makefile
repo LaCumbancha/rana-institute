@@ -1,6 +1,8 @@
 SHELL := /bin/bash
 PWD := $(shell pwd)
 
+scenario := 0
+
 prepare-deploy:
 	@touch .deploy.tmp
 	@echo "y" >> .deploy.tmp
@@ -33,7 +35,7 @@ run-local-test:
 
 run-test:
 	docker-compose -f ./test/dockerized-environment.yml up -d influxdb grafana
-	docker-compose run -v ./test/scripts:/scripts k6 run -e ENVIRONMENT=PROD -e SIZE=LONG /scripts/long-test.js
+	docker-compose -f ./test/dockerized-environment.yml run -v "$(PWD)/test/scripts":/scripts k6 run -e ENVIRONMENT=PROD -e SCENARIO=/scripts/scenarios/scenario$(scenario).csv /scripts/k6-test.js
 
 stop-test:
 	docker-compose -f ./test/dockerized-environment.yml stop -t 1
