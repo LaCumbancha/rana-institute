@@ -89,7 +89,7 @@ export function metrics(status, time) {
 export function stressTest() {
 	group('/site', function(){
 		currentPage = nextPage(currentPage)
-		let response = http.get(URL + currentPage)
+		let response = http.get(URL + currentPage, { timeout: '1s' })
 		let responseTime = response.timings.waiting
 
 		// Retrieving favicon only once.

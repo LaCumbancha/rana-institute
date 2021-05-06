@@ -16,7 +16,7 @@
   "editable": true,
   "gnetId": 2587,
   "graphTooltip": 2,
-  "iteration": 1620256924885,
+  "iteration": 1620274407952,
   "links": [],
   "panels": [
     {
@@ -139,7 +139,9 @@
         }
       ],
       "thresholds": [],
+      "timeFrom": null,
       "timeRegions": [],
+      "timeShift": null,
       "title": "Success vs Errors",
       "tooltip": {
         "shared": true,
@@ -307,6 +309,143 @@
       }
     },
     {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 0,
+        "y": 8
+      },
+      "id": 42,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.5.5",
+      "targets": [
+        {
+          "datasource": "__expr__",
+          "expression": "$A / ($A + $B) ",
+          "hide": false,
+          "refId": "D",
+          "type": "math"
+        },
+        {
+          "groupBy": [
+            {
+              "params": [
+                "1s"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": true,
+          "measurement": "ErrorRate",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT sum(\"value\") FROM \"ErrorRate\" WHERE $timeFilter GROUP BY time(20m) fill(null)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "sum"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": true,
+          "measurement": "SuccessRate",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT sum(\"value\") FROM \"SuccessRate\" WHERE $timeFilter GROUP BY time(20m) fill(null)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "sum"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "title": "% Error",
+      "type": "stat"
+    },
+    {
       "aliasColors": {},
       "bars": true,
       "dashLength": 10,
@@ -321,7 +460,7 @@
       "gridPos": {
         "h": 8,
         "w": 6,
-        "x": 0,
+        "x": 6,
         "y": 8
       },
       "hiddenSeries": false,
@@ -1873,9 +2012,9 @@
         "x": 0,
         "y": 28
       },
-      "id": 21,
+      "id": 32,
       "panels": [],
-      "repeatIteration": 1620256924885,
+      "repeatIteration": 1620274407952,
       "repeatPanelId": 19,
       "scopedVars": {
         "Measurement": {
@@ -1917,7 +2056,7 @@
         "y": 29
       },
       "height": "50px",
-      "id": 22,
+      "id": 33,
       "interval": null,
       "links": [],
       "mappingType": 1,
@@ -1945,7 +2084,7 @@
           "to": "null"
         }
       ],
-      "repeatIteration": 1620256924885,
+      "repeatIteration": 1620274407952,
       "repeatPanelId": 11,
       "repeatedByRow": true,
       "scopedVars": {
@@ -2045,7 +2184,7 @@
         "y": 29
       },
       "height": "50px",
-      "id": 23,
+      "id": 34,
       "interval": null,
       "links": [],
       "mappingType": 1,
@@ -2073,7 +2212,7 @@
           "to": "null"
         }
       ],
-      "repeatIteration": 1620256924885,
+      "repeatIteration": 1620274407952,
       "repeatPanelId": 14,
       "repeatedByRow": true,
       "scopedVars": {
@@ -2173,7 +2312,7 @@
         "y": 29
       },
       "height": "50px",
-      "id": 24,
+      "id": 35,
       "interval": null,
       "links": [],
       "mappingType": 1,
@@ -2201,7 +2340,7 @@
           "to": "null"
         }
       ],
-      "repeatIteration": 1620256924885,
+      "repeatIteration": 1620274407952,
       "repeatPanelId": 15,
       "repeatedByRow": true,
       "scopedVars": {
@@ -2301,7 +2440,7 @@
         "y": 29
       },
       "height": "50px",
-      "id": 25,
+      "id": 36,
       "interval": null,
       "links": [],
       "mappingType": 1,
@@ -2329,7 +2468,7 @@
           "to": "null"
         }
       ],
-      "repeatIteration": 1620256924885,
+      "repeatIteration": 1620274407952,
       "repeatPanelId": 16,
       "repeatedByRow": true,
       "scopedVars": {
@@ -2429,7 +2568,7 @@
         "y": 29
       },
       "height": "50px",
-      "id": 26,
+      "id": 37,
       "interval": null,
       "links": [],
       "mappingType": 1,
@@ -2457,7 +2596,7 @@
           "to": "null"
         }
       ],
-      "repeatIteration": 1620256924885,
+      "repeatIteration": 1620274407952,
       "repeatPanelId": 12,
       "repeatedByRow": true,
       "scopedVars": {
@@ -2557,7 +2696,7 @@
         "y": 29
       },
       "height": "50px",
-      "id": 27,
+      "id": 38,
       "interval": null,
       "links": [],
       "mappingType": 1,
@@ -2585,7 +2724,7 @@
           "to": "null"
         }
       ],
-      "repeatIteration": 1620256924885,
+      "repeatIteration": 1620274407952,
       "repeatPanelId": 13,
       "repeatedByRow": true,
       "scopedVars": {
@@ -2676,7 +2815,7 @@
       },
       "height": "250px",
       "hiddenSeries": false,
-      "id": 28,
+      "id": 39,
       "interval": ">1s",
       "legend": {
         "alignAsTable": false,
@@ -2700,7 +2839,7 @@
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
-      "repeatIteration": 1620256924885,
+      "repeatIteration": 1620274407952,
       "repeatPanelId": 5,
       "repeatedByRow": true,
       "scopedVars": {
@@ -2949,13 +3088,13 @@
       "height": "250px",
       "hideZeroBuckets": false,
       "highlightCards": true,
-      "id": 29,
+      "id": 40,
       "interval": ">1s",
       "legend": {
         "show": false
       },
       "links": [],
-      "repeatIteration": 1620256924885,
+      "repeatIteration": 1620274407952,
       "repeatPanelId": 8,
       "repeatedByRow": true,
       "reverseYBuckets": false,
@@ -3121,8 +3260,8 @@
     ]
   },
   "time": {
-    "from": "2021-05-05T17:06:12.356Z",
-    "to": "2021-05-05T17:17:22.990Z"
+    "from": "2021-05-06T02:58:12.892Z",
+    "to": "2021-05-06T03:10:05.633Z"
   },
   "timepicker": {
     "refresh_intervals": [
@@ -3150,7 +3289,7 @@
     ]
   },
   "timezone": "browser",
-  "title": "Dashboard #1",
+  "title": "Metrics",
   "uid": "jlkTmRCGk",
-  "version": 1
+  "version": 2
 }
