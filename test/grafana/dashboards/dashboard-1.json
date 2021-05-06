@@ -16,30 +16,15 @@
   "editable": true,
   "gnetId": 2587,
   "graphTooltip": 2,
-  "iteration": 1620186675427,
+  "iteration": 1620256924885,
   "links": [],
   "panels": [
-    {
-      "collapsed": false,
-      "datasource": null,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 0
-      },
-      "id": 18,
-      "panels": [],
-      "repeat": null,
-      "title": "Dashboard Row",
-      "type": "row"
-    },
     {
       "aliasColors": {},
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "myinfluxdb",
+      "datasource": null,
       "fieldConfig": {
         "defaults": {},
         "overrides": []
@@ -47,34 +32,31 @@
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
-        "h": 7,
-        "w": 6,
+        "h": 8,
+        "w": 12,
         "x": 0,
-        "y": 1
+        "y": 0
       },
       "hiddenSeries": false,
-      "id": 1,
-      "interval": ">1s",
+      "id": 31,
       "legend": {
-        "alignAsTable": true,
         "avg": false,
         "current": false,
-        "max": true,
-        "min": true,
+        "max": false,
+        "min": false,
         "show": true,
         "total": false,
-        "values": true
+        "values": false
       },
       "lines": false,
       "linewidth": 1,
-      "links": [],
       "nullPointMode": "null",
       "options": {
         "alertThreshold": true
       },
       "percentage": false,
       "pluginVersion": "7.5.5",
-      "pointradius": 5,
+      "pointradius": 2,
       "points": false,
       "renderer": "flot",
       "seriesOverrides": [],
@@ -83,23 +65,21 @@
       "steppedLine": false,
       "targets": [
         {
-          "alias": "Active VUs",
-          "dsType": "influxdb",
           "groupBy": [
             {
               "params": [
-                "$__interval"
+                "1s"
               ],
               "type": "time"
             },
             {
               "params": [
-                "none"
+                "null"
               ],
               "type": "fill"
             }
           ],
-          "measurement": "vus",
+          "measurement": "SuccessRate",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "A",
@@ -114,7 +94,44 @@
               },
               {
                 "params": [],
-                "type": "mean"
+                "type": "sum"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "groupBy": [
+            {
+              "params": [
+                "1s"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "ErrorRate",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "sum"
               }
             ]
           ],
@@ -122,10 +139,8 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
-      "title": "Virtual Users",
+      "title": "Success vs Errors",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -175,10 +190,10 @@
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
-        "h": 7,
-        "w": 6,
-        "x": 6,
-        "y": 1
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
       },
       "hiddenSeries": false,
       "id": 17,
@@ -304,10 +319,138 @@
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
-        "h": 7,
+        "h": 8,
+        "w": 6,
+        "x": 0,
+        "y": 8
+      },
+      "hiddenSeries": false,
+      "id": 1,
+      "interval": ">1s",
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": false,
+        "max": true,
+        "min": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": false,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.5.5",
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "alias": "Active VUs",
+          "dsType": "influxdb",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "none"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "vus",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Virtual Users",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": true,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "myinfluxdb",
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
         "w": 6,
         "x": 12,
-        "y": 1
+        "y": 8
       },
       "hiddenSeries": false,
       "id": 7,
@@ -437,10 +580,10 @@
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
-        "h": 7,
+        "h": 8,
         "w": 6,
         "x": 18,
-        "y": 1
+        "y": 8
       },
       "hiddenSeries": false,
       "id": 10,
@@ -570,7 +713,22 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 8
+        "y": 16
+      },
+      "id": 18,
+      "panels": [],
+      "repeat": null,
+      "title": "Dashboard Row",
+      "type": "row"
+    },
+    {
+      "collapsed": false,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 17
       },
       "id": 19,
       "panels": [],
@@ -612,7 +770,7 @@
         "h": 3,
         "w": 4,
         "x": 0,
-        "y": 9
+        "y": 18
       },
       "height": "50px",
       "id": 11,
@@ -737,7 +895,7 @@
         "h": 3,
         "w": 4,
         "x": 4,
-        "y": 9
+        "y": 18
       },
       "height": "50px",
       "id": 14,
@@ -862,7 +1020,7 @@
         "h": 3,
         "w": 4,
         "x": 8,
-        "y": 9
+        "y": 18
       },
       "height": "50px",
       "id": 15,
@@ -987,7 +1145,7 @@
         "h": 3,
         "w": 4,
         "x": 12,
-        "y": 9
+        "y": 18
       },
       "height": "50px",
       "id": 16,
@@ -1112,7 +1270,7 @@
         "h": 3,
         "w": 4,
         "x": 16,
-        "y": 9
+        "y": 18
       },
       "height": "50px",
       "id": 12,
@@ -1237,7 +1395,7 @@
         "h": 3,
         "w": 4,
         "x": 20,
-        "y": 9
+        "y": 18
       },
       "height": "50px",
       "id": 13,
@@ -1352,7 +1510,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 12
+        "y": 21
       },
       "height": "250px",
       "hiddenSeries": false,
@@ -1620,7 +1778,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 12
+        "y": 21
       },
       "heatmap": {},
       "height": "250px",
@@ -1713,11 +1871,11 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 19
+        "y": 28
       },
       "id": 21,
       "panels": [],
-      "repeatIteration": 1620186675427,
+      "repeatIteration": 1620256924885,
       "repeatPanelId": 19,
       "scopedVars": {
         "Measurement": {
@@ -1756,7 +1914,7 @@
         "h": 3,
         "w": 4,
         "x": 0,
-        "y": 20
+        "y": 29
       },
       "height": "50px",
       "id": 22,
@@ -1787,7 +1945,7 @@
           "to": "null"
         }
       ],
-      "repeatIteration": 1620186675427,
+      "repeatIteration": 1620256924885,
       "repeatPanelId": 11,
       "repeatedByRow": true,
       "scopedVars": {
@@ -1884,7 +2042,7 @@
         "h": 3,
         "w": 4,
         "x": 4,
-        "y": 20
+        "y": 29
       },
       "height": "50px",
       "id": 23,
@@ -1915,7 +2073,7 @@
           "to": "null"
         }
       ],
-      "repeatIteration": 1620186675427,
+      "repeatIteration": 1620256924885,
       "repeatPanelId": 14,
       "repeatedByRow": true,
       "scopedVars": {
@@ -2012,7 +2170,7 @@
         "h": 3,
         "w": 4,
         "x": 8,
-        "y": 20
+        "y": 29
       },
       "height": "50px",
       "id": 24,
@@ -2043,7 +2201,7 @@
           "to": "null"
         }
       ],
-      "repeatIteration": 1620186675427,
+      "repeatIteration": 1620256924885,
       "repeatPanelId": 15,
       "repeatedByRow": true,
       "scopedVars": {
@@ -2140,7 +2298,7 @@
         "h": 3,
         "w": 4,
         "x": 12,
-        "y": 20
+        "y": 29
       },
       "height": "50px",
       "id": 25,
@@ -2171,7 +2329,7 @@
           "to": "null"
         }
       ],
-      "repeatIteration": 1620186675427,
+      "repeatIteration": 1620256924885,
       "repeatPanelId": 16,
       "repeatedByRow": true,
       "scopedVars": {
@@ -2268,7 +2426,7 @@
         "h": 3,
         "w": 4,
         "x": 16,
-        "y": 20
+        "y": 29
       },
       "height": "50px",
       "id": 26,
@@ -2299,7 +2457,7 @@
           "to": "null"
         }
       ],
-      "repeatIteration": 1620186675427,
+      "repeatIteration": 1620256924885,
       "repeatPanelId": 12,
       "repeatedByRow": true,
       "scopedVars": {
@@ -2396,7 +2554,7 @@
         "h": 3,
         "w": 4,
         "x": 20,
-        "y": 20
+        "y": 29
       },
       "height": "50px",
       "id": 27,
@@ -2427,7 +2585,7 @@
           "to": "null"
         }
       ],
-      "repeatIteration": 1620186675427,
+      "repeatIteration": 1620256924885,
       "repeatPanelId": 13,
       "repeatedByRow": true,
       "scopedVars": {
@@ -2514,7 +2672,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 23
+        "y": 32
       },
       "height": "250px",
       "hiddenSeries": false,
@@ -2542,7 +2700,7 @@
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
-      "repeatIteration": 1620186675427,
+      "repeatIteration": 1620256924885,
       "repeatPanelId": 5,
       "repeatedByRow": true,
       "scopedVars": {
@@ -2785,7 +2943,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 23
+        "y": 32
       },
       "heatmap": {},
       "height": "250px",
@@ -2797,7 +2955,7 @@
         "show": false
       },
       "links": [],
-      "repeatIteration": 1620186675427,
+      "repeatIteration": 1620256924885,
       "repeatPanelId": 8,
       "repeatedByRow": true,
       "reverseYBuckets": false,
@@ -2881,7 +3039,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 30
+        "y": 39
       },
       "id": 20,
       "panels": [],
@@ -2963,8 +3121,8 @@
     ]
   },
   "time": {
-    "from": "2021-05-05T03:32:06.864Z",
-    "to": "2021-05-05T03:44:29.558Z"
+    "from": "2021-05-05T17:06:12.356Z",
+    "to": "2021-05-05T17:17:22.990Z"
   },
   "timepicker": {
     "refresh_intervals": [
@@ -2994,5 +3152,5 @@
   "timezone": "browser",
   "title": "Dashboard #1",
   "uid": "jlkTmRCGk",
-  "version": 3
+  "version": 1
 }
